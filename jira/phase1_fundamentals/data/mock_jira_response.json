@@ -1,0 +1,213 @@
+{
+  "expand": "names,schema",
+  "startAt": 0,
+  "maxResults": 50,
+  "total": 5,
+  "issues": [
+    {
+      "id": "10001",
+      "key": "KAN-1",
+      "fields": {
+        "summary": "Set up CI/CD pipeline for microservices",
+        "status": {
+          "name": "In Progress",
+          "id": "3",
+          "statusCategory": {
+            "id": 4,
+            "key": "indeterminate",
+            "name": "In Progress"
+          }
+        },
+        "assignee": {
+          "accountId": "5b10ac8d82e05b22cc7d4ef5",
+          "displayName": "Naresh Gantala",
+          "emailAddress": "naresh.og9@gmail.com",
+          "active": true
+        },
+        "priority": {
+          "name": "High",
+          "id": "2"
+        },
+        "issuetype": {
+          "name": "Story",
+          "id": "10001"
+        },
+        "project": {
+          "key": "KAN",
+          "name": "Kanban Board"
+        },
+        "created": "2026-08-01T10:30:00.000+0530",
+        "updated": "2026-08-15T14:22:00.000+0530",
+        "customfield_10014": "KAN-100",
+        "labels": ["devops", "ci-cd"],
+        "components": [
+          {
+            "id": "10001",
+            "name": "Infrastructure"
+          }
+        ]
+      }
+    },
+    {
+      "id": "10002",
+      "key": "KAN-2",
+      "fields": {
+        "summary": "Configure Jira automation rules for SLA tracking",
+        "status": {
+          "name": "To Do",
+          "id": "1",
+          "statusCategory": {
+            "id": 2,
+            "key": "new",
+            "name": "To Do"
+          }
+        },
+        "assignee": null,
+        "priority": {
+          "name": "Medium",
+          "id": "3"
+        },
+        "issuetype": {
+          "name": "Task",
+          "id": "10002"
+        },
+        "project": {
+          "key": "KAN",
+          "name": "Kanban Board"
+        },
+        "created": "2026-08-05T09:15:00.000+0530",
+        "updated": "2026-08-05T09:15:00.000+0530",
+        "customfield_10014": null,
+        "labels": ["jira-admin"],
+        "components": []
+      }
+    },
+    {
+      "id": "10003",
+      "key": "KAN-3",
+      "fields": {
+        "summary": "Migrate Route 53 DNS records to new hosted zone",
+        "status": {
+          "name": "Done",
+          "id": "5",
+          "statusCategory": {
+            "id": 3,
+            "key": "done",
+            "name": "Done"
+          }
+        },
+        "assignee": {
+          "accountId": "5b10ac8d82e05b22cc7d4ef6",
+          "displayName": "Ravi Kumar",
+          "emailAddress": "ravi.kumar@example.com",
+          "active": true
+        },
+        "priority": {
+          "name": "High",
+          "id": "2"
+        },
+        "issuetype": {
+          "name": "Story",
+          "id": "10001"
+        },
+        "project": {
+          "key": "OPS",
+          "name": "Operations"
+        },
+        "created": "2026-07-20T11:00:00.000+0530",
+        "updated": "2026-08-10T16:45:00.000+0530",
+        "customfield_10014": "OPS-50",
+        "labels": ["aws", "dns"],
+        "components": [
+          {
+            "id": "10002",
+            "name": "Networking"
+          }
+        ]
+      }
+    },
+    {
+      "id": "10004",
+      "key": "OPS-15",
+      "fields": {
+        "summary": "Patch EC2 instances in prod environment",
+        "status": {
+          "name": "To Do",
+          "id": "1",
+          "statusCategory": {
+            "id": 2,
+            "key": "new",
+            "name": "To Do"
+          }
+        },
+        "assignee": null,
+        "priority": {
+          "name": "Critical",
+          "id": "1"
+        },
+        "issuetype": {
+          "name": "Task",
+          "id": "10002"
+        },
+        "project": {
+          "key": "OPS",
+          "name": "Operations"
+        },
+        "created": "2026-08-18T08:00:00.000+0530",
+        "updated": "2026-08-18T08:00:00.000+0530",
+        "customfield_10014": null,
+        "labels": ["aws", "patching", "ec2"],
+        "components": [
+          {
+            "id": "10001",
+            "name": "Infrastructure"
+          }
+        ]
+      }
+    },
+    {
+      "id": "10005",
+      "key": "KAN-5",
+      "fields": {
+        "summary": "Create JSM incident workflow for P1 alerts",
+        "status": {
+          "name": "In Progress",
+          "id": "3",
+          "statusCategory": {
+            "id": 4,
+            "key": "indeterminate",
+            "name": "In Progress"
+          }
+        },
+        "assignee": {
+          "accountId": "5b10ac8d82e05b22cc7d4ef5",
+          "displayName": "Naresh Gantala",
+          "emailAddress": "naresh.og9@gmail.com",
+          "active": true
+        },
+        "priority": {
+          "name": "High",
+          "id": "2"
+        },
+        "issuetype": {
+          "name": "Story",
+          "id": "10001"
+        },
+        "project": {
+          "key": "KAN",
+          "name": "Kanban Board"
+        },
+        "created": "2026-08-12T13:30:00.000+0530",
+        "updated": "2026-08-19T10:00:00.000+0530",
+        "customfield_10014": "KAN-100",
+        "labels": ["jsm", "incident-management"],
+        "components": [
+          {
+            "id": "10003",
+            "name": "Service Management"
+          }
+        ]
+      }
+    }
+  ]
+}
