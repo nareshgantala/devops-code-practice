@@ -134,3 +134,90 @@ unique = set(projects)  # {"KAN", "OPS"}
 ```
 `list` = duplicates OK, ordered
 `set` = no duplicates, unordered
+
+---
+
+### Card 11
+
+**FRONT:** What is JSON?
+
+**BACK:** A text format for storing data. Looks like Python dicts.
+Used by: Jira API, AWS CLI, Kubernetes, Terraform.
+File extension: `.json`
+Your `launch.json` and Jira API responses are JSON.
+
+---
+
+### Card 12
+
+**FRONT:** JSON vs Python — what's different?
+
+**BACK:**
+```
+JSON       →  Python
+null       →  None
+true       →  True
+false      →  False
+```
+Everything else (strings, numbers, lists, dicts) looks the same.
+
+---
+
+### Card 13
+
+**FRONT:** How to read a JSON file into Python?
+
+**BACK:**
+```
+import json
+
+with open("data.json", "r") as f:
+    data = json.load(f)
+
+print(data["total"])
+```
+`json.load(f)` converts the file content into a Python dict.
+
+---
+
+### Card 14
+
+**FRONT:** How to access nested JSON?
+`{"issues": [{"fields": {"status": {"name": "To Do"}}}]}`
+
+**BACK:** Chain the keys step by step:
+```
+data["issues"]                         → list
+data["issues"][0]                      → first issue
+data["issues"][0]["fields"]            → fields dict
+data["issues"][0]["fields"]["status"]  → status dict
+data["issues"][0]["fields"]["status"]["name"] → "To Do"
+```
+
+---
+
+### Card 15
+
+**FRONT:** How to pretty-print a dict to see its structure?
+
+**BACK:**
+```
+import json
+print(json.dumps(data, indent=2))
+```
+`indent=2` adds spacing so you can read the nested structure.
+Use this to debug API responses.
+
+---
+
+### Card 16
+
+**FRONT:** Where will you see JSON in DevOps work?
+
+**BACK:**
+- Jira API → sends/receives JSON
+- AWS CLI → output is JSON
+- `launch.json` → VS Code config
+- Terraform state → JSON
+- Kubernetes → JSON or YAML
+- REST APIs → all use JSON
