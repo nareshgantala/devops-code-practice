@@ -260,3 +260,51 @@ The **debugger** expands the object and shows ALL fields.
 Use the debugger or access specific fields:
 `print(response.text)`
 `print(response.status_code)`
+
+---
+
+### Card 20
+
+**FRONT:** Is `response.text` specific to Jira?
+
+**BACK:** No! It comes from the `requests` library.
+ANY API call with `requests.get()` gives you:
+`.text`, `.json()`, `.status_code`, `.ok`
+Works for Jira, GitHub, Azure, Slack — any REST API.
+
+---
+
+### Card 21
+
+**FRONT:** `response.text` vs `response.json()` — what's the difference?
+
+**BACK:**
+`.text` → raw string: `'{"issues":[{"id":"10077"}]}'`
+`.json()` → parsed dict: `{'issues': [{'id': '10077'}]}`
+`.json()` is same as doing `json.loads(response.text)`
+Use `.json()` when you need to access keys.
+
+---
+
+### Card 22
+
+**FRONT:** Does AWS boto3 also use `response.json()`?
+
+**BACK:** No! boto3 returns dicts directly — no `.json()` needed.
+```
+result = ec2.describe_instances()
+result["Reservations"]    # already a dict
+```
+`requests` library → need `.json()` to get dict
+`boto3` library → gives you dict directly
+
+---
+
+### Card 23
+
+**FRONT:** `dict["key"]` uses brackets. `object.field` uses dot. When to use which?
+
+**BACK:**
+`data["issues"]` → brackets → for dicts you created or parsed from JSON
+`response.status_code` → dot → for objects a library gave you
+Quick test: did you make it with `{}`? → brackets. Did a library return it? → dot.
