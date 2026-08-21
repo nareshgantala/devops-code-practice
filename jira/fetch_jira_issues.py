@@ -25,3 +25,7 @@ response = requests.request(
    params=query,
    auth=auth
 )
+
+
+print(response)
+print(response.json())

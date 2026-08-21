@@ -221,3 +221,42 @@ Use this to debug API responses.
 - Terraform state → JSON
 - Kubernetes → JSON or YAML
 - REST APIs → all use JSON
+
+---
+
+### Card 17
+
+**FRONT:** What is a Python object?
+
+**BACK:** Data + actions bundled together.
+```
+response.status_code    → data (no parentheses)
+response.json()         → action (has parentheses)
+```
+Strings, lists, API responses, boto3 instances — all objects.
+Everything in Python is an object.
+
+---
+
+### Card 18
+
+**FRONT:** `response` vs `response.text` vs `response.json()`?
+
+**BACK:**
+`response` → the whole object (box)
+`response.text` → body as a string
+`response.json()` → body as a Python dict
+`response.status_code` → 200, 404, etc.
+`response.ok` → True if status is 2xx
+
+---
+
+### Card 19
+
+**FRONT:** Why does `print(response)` show `<Response [200]>` but debugger shows everything?
+
+**BACK:** `print()` shows the object's label only.
+The **debugger** expands the object and shows ALL fields.
+Use the debugger or access specific fields:
+`print(response.text)`
+`print(response.status_code)`
