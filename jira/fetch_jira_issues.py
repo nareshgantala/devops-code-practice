@@ -26,6 +26,7 @@ response = requests.request(
    auth=auth
 )
 
+data = response.json()
 
-print(response)
-print(response.json())
+print(data)
+

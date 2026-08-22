@@ -308,3 +308,142 @@ result["Reservations"]    # already a dict
 `data["issues"]` → brackets → for dicts you created or parsed from JSON
 `response.status_code` → dot → for objects a library gave you
 Quick test: did you make it with `{}`? → brackets. Did a library return it? → dot.
+
+---
+
+## Session 2 — 2026-08-22 (AWS & Azure APIs)
+
+---
+
+### Card 24
+
+**FRONT:** What does `boto3.client('ec2')` return?
+
+**BACK:** An **object** (type: `botocore.client.EC2`).
+You call methods on it to interact with AWS:
+```
+client = boto3.client('ec2')
+result = client.describe_instances()
+```
+`client` = object, `result` = dictionary (directly).
+
+---
+
+### Card 25
+
+**FRONT:** What type does `client.describe_instances()` return in AWS boto3?
+
+**BACK:** A **dictionary** — directly! No `.json()` needed.
+```
+result = client.describe_instances()
+type(result)  # <class 'dict'>
+result["Reservations"]  # access keys immediately
+```
+
+---
+
+### Card 26
+
+**FRONT:** The 3 API patterns — Jira vs AWS vs Azure. How does each return data?
+
+**BACK:**
+| API | Returns | To get dict |
+|---|---|---|
+| Jira (`requests`) | Response **object** | `.json()` |
+| AWS (`boto3`) | **dict** directly | Already a dict ✅ |
+| Azure SDK | **Iterator** of objects | Loop + `.as_dict()` |
+
+---
+
+### Card 27
+
+**FRONT:** What is the universal pattern for working with any API in Python?
+
+**BACK:**
+```
+Step 1: Connect → get an Object (client)
+Step 2: Call a method → get data as dict
+Step 3: Process the dictionary → loops, filters
+```
+Step 2 differs by library, but Step 3 is always the same.
+
+---
+
+### Card 28
+
+**FRONT:** What is `ItemPaged` in Azure SDK?
+
+**BACK:** An **iterator** — a container that holds objects one by one.
+`client.virtual_machines.list_all()` → returns `ItemPaged`
+You **cannot** call `.as_dict()` on `ItemPaged` itself.
+You must **loop** to get each object out first.
+
+---
+
+### Card 29
+
+**FRONT:** How to convert Azure VM objects to dictionaries?
+
+**BACK:**
+```
+vms = client.virtual_machines.list_all()
+
+for vm in vms:           # loop through iterator
+    vm_dict = vm.as_dict()  # convert EACH object
+    print(vm_dict)
+```
+`.as_dict()` works on each **individual object**, not the iterator.
+
+---
+
+### Card 30
+
+**FRONT:** Azure SDK — `list_*()` vs `get_*()`. What's the difference?
+
+**BACK:**
+`list_*()` → returns `ItemPaged` iterator → **loop** + `.as_dict()`
+`get_*()` → returns **one** model object → `.as_dict()` directly
+```
+# list (many) — must loop
+for vm in client.virtual_machines.list_all():
+    print(vm.as_dict())
+
+# get (one) — no loop
+vm = client.virtual_machines.get("rg", "vm-name")
+print(vm.as_dict())
+```
+
+---
+
+### Card 31
+
+**FRONT:** Why can't we process objects directly? Why do we need dictionaries?
+
+**BACK:** Because dictionaries let us:
+- Access data by **key** → `data["name"]`
+- **Loop** through items → `for item in data["list"]:`
+- **Filter** and **extract** values
+Objects hide their data inside methods and attributes.
+Our goal: **Object → Dictionary → Process**.
+
+---
+
+### Card 32
+
+**FRONT:** Why don't you name a variable `dict`?
+
+**BACK:** `dict` is a built-in Python type.
+If you write `dict = something`, you **shadow** the built-in.
+Then `dict()` stops working in your code.
+Use descriptive names instead: `vm_dict`, `vm_data`, `response_data`.
+
+---
+
+### Card 33
+
+**FRONT:** Is `.as_dict()` the same as `.json()`?
+
+**BACK:** No! They are from different libraries:
+- `.json()` → `requests` library → parses HTTP response body (JSON string → dict)
+- `.as_dict()` → Azure SDK → converts Azure model object → dict
+Same goal (get a dictionary), different libraries, different method names.
