@@ -9,6 +9,15 @@ variable "app" {
 }
 
 
+locals {
+  messages = "deployings ${var.app} in ${var.env} environments of company"
+}
+
 output "message" {
   value = "deploying ${var.app} in ${var.env} environment"
+}
+
+
+output "messages" {
+  value = local.messages
 }
