@@ -3,3 +3,7 @@ env=dev
 
 echo "deploying $app in $env environment"
 
+
+# Usage ./var.sh
+
+
