@@ -1,0 +1,10 @@
+- name: deploy to prod
+  hosts: all
+  vars:
+    app: payment
+    env: prod
+  tasks:
+    - name: deploy to prod
+      debug:
+        msg: "deploying {{ app }} to  {{ env }} environment"
+#ansible-playbook deploy.yml -i inventory.ini
