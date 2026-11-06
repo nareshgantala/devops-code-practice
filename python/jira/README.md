@@ -48,7 +48,7 @@ ORG_ID="your_organization_id"
 ORG_API_KEY="your_org_admin_api_key"
 
 # Target Confluence Space & Page Settings
-TARGET_SPACE_ID="524292"
+TARGET_SPACE_ID="524292" #(The space in which new page to be created)
 PAGE_TITLE="Confluence Space Roles Report"
 ```
 
