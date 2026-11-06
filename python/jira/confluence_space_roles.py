@@ -35,7 +35,7 @@ user_cache = {}
 
 def get_all_spaces():
     """
-    2. Fetch all Confluence spaces using REST API v2:
+    2. Fetch all non-personal Confluence spaces using REST API v2:
     https://developer.atlassian.com/cloud/confluence/rest/v2/api-group-space/#api-spaces-get
     """
     spaces = []
@@ -46,7 +46,10 @@ def get_all_spaces():
         response.raise_for_status()
         data = response.json()
 
-        spaces.extend(data.get("results", []))
+        # Skip personal/user spaces (where type == 'personal')
+        for space in data.get("results", []):
+            if space.get("type") != "personal":
+                spaces.append(space)
 
         # Handle cursor pagination if there are more spaces
         next_link = data.get("_links", {}).get("next")
