@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-banking
+  template:
+    metadata:
+      labels:
+        app: web-banking
+    spec:
+      containers:
+      - name: memory-hog
+        image: alpine
+        command: ["sh", "-c", "dd if=/dev/zero of=/dev/shm/fill_mem bs=1M count=50 && sleep 3600"]
+        resources:
+          limits:
+            memory: "20Mi"
+          requests:
+            memory: "10Mi"
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-svc
+spec:
+  selector:
+    app: web-banking
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 80
