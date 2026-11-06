@@ -1,4 +1,5 @@
 import html
+import html
 import os
 import requests
 from requests.auth import HTTPBasicAuth
@@ -8,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # 1. Authentication & Configuration
-DOMAIN = os.getenv("CONFLUENCE_DOMAIN") or os.getenv("JIRA_DOMAIN")
+DOMAIN = (os.getenv("CONFLUENCE_DOMAIN") or os.getenv("JIRA_DOMAIN") or "").rstrip("/")
 EMAIL = os.getenv("CONFLUENCE_EMAIL") or os.getenv("JIRA_EMAIL")
 API_TOKEN = os.getenv("API_TOKEN")
 
@@ -188,17 +189,35 @@ def build_confluence_table_html(rows):
     """
     Build Confluence Storage Format HTML table with 4 columns:
     Serial No | Space Name | User/Group Name | Space Role
+    Uses rowspan to merge 'Serial No' and 'Space Name' across all users/groups in the same space.
     """
-    table_rows_html = ""
+    # Count how many rows belong to each space so we can set rowspan
+    space_counts = {}
     for row in rows:
-        table_rows_html += (
-            "<tr>"
-            f"<td>{row['serial_no']}</td>"
-            f"<td>{html.escape(str(row['space_name']))}</td>"
-            f"<td>{html.escape(str(row['principal_name']))}</td>"
-            f"<td>{html.escape(str(row['role_name']))}</td>"
-            "</tr>"
-        )
+        space_name = row["space_name"]
+        space_counts[space_name] = space_counts.get(space_name, 0) + 1
+
+    table_rows_html = ""
+    rendered_spaces = set()
+    space_serial_no = 1
+
+    for row in rows:
+        space_name = row["space_name"]
+        table_rows_html += "<tr>"
+
+        # Only render Serial No and Space Name on the first row for that space, spanning all its rows
+        if space_name not in rendered_spaces:
+            rowspan = space_counts[space_name]
+            table_rows_html += f'<td rowspan="{rowspan}">{space_serial_no}</td>'
+            table_rows_html += (
+                f'<td rowspan="{rowspan}">{html.escape(str(space_name))}</td>'
+            )
+            rendered_spaces.add(space_name)
+            space_serial_no += 1
+
+        table_rows_html += f"<td>{html.escape(str(row['principal_name']))}</td>"
+        table_rows_html += f"<td>{html.escape(str(row['role_name']))}</td>"
+        table_rows_html += "</tr>"
 
     table_html = (
         "<table>"
@@ -220,9 +239,41 @@ def build_confluence_table_html(rows):
 
 def create_confluence_page(space_id, title, body_html):
     """
-    Create a Confluence page using REST API v2:
+    Create (or update if it already exists) a Confluence page using REST API v2:
     POST /wiki/api/v2/pages
     """
+    # Check if a page with this title already exists in the target space
+    search_url = f"{DOMAIN}/wiki/api/v2/spaces/{space_id}/pages"
+    search_resp = requests.get(
+        search_url, headers=headers, params={"title": title}, auth=auth
+    )
+    if search_resp.status_code == 200:
+        existing_pages = search_resp.json().get("results", [])
+        if existing_pages:
+            page_id = existing_pages[0].get("id")
+            current_version = existing_pages[0].get("version", {}).get("number", 1)
+            update_url = f"{DOMAIN}/wiki/api/v2/pages/{page_id}"
+            update_payload = {
+                "id": str(page_id),
+                "status": "current",
+                "title": title,
+                "body": {
+                    "representation": "storage",
+                    "value": body_html,
+                },
+                "version": {
+                    "number": current_version + 1,
+                    "message": "Updated space roles report",
+                },
+            }
+            update_resp = requests.put(
+                update_url, headers=headers, json=update_payload, auth=auth
+            )
+            if not update_resp.ok:
+                print(f"Error updating page: {update_resp.text}")
+            update_resp.raise_for_status()
+            return update_resp.json()
+
     url = f"{DOMAIN}/wiki/api/v2/pages"
     payload = {
         "spaceId": str(space_id),
@@ -235,6 +286,8 @@ def create_confluence_page(space_id, title, body_html):
     }
 
     response = requests.post(url, headers=headers, json=payload, auth=auth)
+    if not response.ok:
+        print(f"Error creating page: {response.text}")
     response.raise_for_status()
     return response.json()
 
@@ -281,8 +334,12 @@ def main():
             )
             serial_no += 1
 
-    # Choose target space to publish the page (use TARGET_SPACE_ID or first space found)
-    target_space_id = TARGET_SPACE_ID or spaces[0].get("id")
+    # Choose target space to publish the page (use TARGET_SPACE_ID if valid, otherwise first space found)
+    valid_space_ids = {str(s.get("id")) for s in spaces}
+    if TARGET_SPACE_ID and str(TARGET_SPACE_ID) in valid_space_ids:
+        target_space_id = str(TARGET_SPACE_ID)
+    else:
+        target_space_id = str(spaces[0].get("id"))
 
     print(f"Generating Confluence page '{PAGE_TITLE}' in space ID {target_space_id}...")
     table_html = build_confluence_table_html(table_rows)
